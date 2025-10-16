@@ -1,0 +1,27 @@
+---
+galaxy_info:
+  role_name: rabbitmq_repo
+  author: Typhoon999
+  description: >
+    Dodaje oficjalne repozytoria RabbitMQ i Erlang (Cloudsmith) dla systemów
+    RHEL/EL 8 i 9, z włączoną weryfikacją GPG i repo_gpgcheck.
+  license: MIT
+  min_ansible_version: "2.9"
+
+  platforms:
+    - name: EL
+      versions:
+        - "8"
+        - "9"
+
+  galaxy_tags:
+    - rabbitmq
+    - erlang
+    - rhel
+    - el8
+    - el9
+    - repository
+    - yum
+    - dnf
+
+dependencies: []
