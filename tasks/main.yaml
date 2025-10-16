@@ -97,4 +97,8 @@
     module_hotfixes: "{{ rabbitmq_repo_module_hotfixes }}"
     state: present
   notify: Refresh package metadata
+
+- name: Konfiguracja RabbitMQ (pakiety, pluginy, użytkownik)
+  ansible.builtin.include_tasks: configure.yml
+  when: rabbitmq_manage_enable
 ...

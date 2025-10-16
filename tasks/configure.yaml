@@ -1,0 +1,67 @@
+---
+# Opcjonalnie: instalacja pakietów (jeśli nie były instalowane wcześniej)
+- name: Zainstaluj Erlang i RabbitMQ Server
+  ansible.builtin.package:
+    name:
+      - erlang
+      - rabbitmq-server
+    state: present
+  when: rabbitmq_install_packages
+
+# Przygotowanie katalogu na zewnętrzne pluginy
+- name: Utwórz katalog na pluginy RabbitMQ (jeśli nie istnieje)
+  ansible.builtin.file:
+    path: "{{ rabbitmq_plugins_dir }}"
+    state: directory
+    mode: "0755"
+
+# Pobranie pluginu rabbitmq_delayed_message_exchange
+- name: Pobierz plugin rabbitmq_delayed_message_exchange
+  ansible.builtin.get_url:
+    url: "{{ rabbitmq_dlx_url }}"
+    dest: "{{ rabbitmq_plugins_dir }}/{{ rabbitmq_dlx_filename }}"
+    mode: "0644"
+    force: false
+  when: rabbitmq_install_dlx_plugin
+  notify: Restart RabbitMQ service
+
+# Upewnij się, że usługa jest włączona i uruchomiona
+- name: Włącz i uruchom usługę RabbitMQ
+  ansible.builtin.systemd:
+    name: "{{ rabbitmq_service_name }}"
+    enabled: true
+    state: started
+    daemon_reload: true
+
+# Włącz wymagane pluginy
+- name: Włącz pluginy RabbitMQ
+  community.rabbitmq.rabbitmq_plugin:
+    names: "{{ item }}"
+    state: enabled
+  loop: "{{ rabbitmq_plugins_to_enable }}"
+  notify: Restart RabbitMQ service
+
+# Walidacja zmiennych użytkownika
+- name: Sprawdź czy zdefiniowano nazwę użytkownika i hasło
+  ansible.builtin.assert:
+    that:
+      - rabbitmq_user_manage | bool
+      - rabbitmq_user_name | length > 0
+      - rabbitmq_user_password | length > 0
+    fail_msg: "Zdefiniuj rabbitmq_user_name oraz rabbitmq_user_password aby utworzyć użytkownika."
+
+# Utwórz/zmodyfikuj użytkownika, tagi i uprawnienia
+- name: Skonfiguruj użytkownika RabbitMQ (hasło, tagi, uprawnienia)
+  community.rabbitmq.rabbitmq_user:
+    user: "{{ rabbitmq_user_name }}"
+    password: "{{ rabbitmq_user_password }}"
+    tags: "{{ rabbitmq_user_tags }}"
+    vhost: "{{ rabbitmq_user_vhost }}"
+    configure_priv: "{{ rabbitmq_user_configure_priv }}"
+    read_priv: "{{ rabbitmq_user_read_priv }}"
+    write_priv: "{{ rabbitmq_user_write_priv }}"
+    state: present
+
+# Zastosuj restarty po włączeniu pluginów/instalacji .ez
+- name: Zastosuj wymagane restarty teraz
+  ansible.builtin.meta: flush_handlers

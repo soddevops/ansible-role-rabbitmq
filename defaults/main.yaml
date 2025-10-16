@@ -29,3 +29,39 @@ rabbitmq_repo_sslcacert: "/etc/pki/tls/certs/ca-bundle.crt"
 
 # Dla EL8 przydatne
 rabbitmq_repo_module_hotfixes: "{{ el_major == 8 }}"
+
+# --- Konfiguracja instalacji i zarządzania RabbitMQ ---
+
+# Czy instalować pakiety erlang + rabbitmq-server
+rabbitmq_install_packages: true
+
+# Nazwa usługi
+rabbitmq_service_name: "rabbitmq-server"
+
+# Katalog na dodatkowe pluginy (.ez)
+rabbitmq_plugins_dir: "/usr/lib/rabbitmq/plugins"
+
+# Plugin: rabbitmq_delayed_message_exchange
+rabbitmq_install_dlx_plugin: true
+rabbitmq_dlx_version: "4.1.0"
+rabbitmq_dlx_filename: "rabbitmq_delayed_message_exchange-{{ rabbitmq_dlx_version }}.ez"
+rabbitmq_dlx_url: "https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/v{{ rabbitmq_dlx_version }}/{{ rabbitmq_dlx_filename }}"
+
+# Lista pluginów do włączenia
+rabbitmq_plugins_to_enable:
+  - rabbitmq_management
+  - rabbitmq_prometheus
+  - rabbitmq_delayed_message_exchange
+
+# Zarządzanie użytkownikiem aplikacyjnym
+rabbitmq_user_manage: true
+rabbitmq_user_name: ""       # USTAW w inventory/vars
+rabbitmq_user_password: ""   # USTAW w inventory/vars
+rabbitmq_user_vhost: "/"
+rabbitmq_user_configure_priv: ".*"
+rabbitmq_user_read_priv: ".*"
+rabbitmq_user_write_priv: ".*"
+rabbitmq_user_tags: "administrator"
+
+# Czy wykonać konfigurację (instalacja pluginu, włączenie pluginów, użytkownik)
+rabbitmq_manage_enable: true

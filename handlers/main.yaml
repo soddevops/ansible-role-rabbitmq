@@ -10,3 +10,9 @@
     update_cache: yes
   when: ansible_facts.pkg_mgr == 'yum'
   listen: Refresh package metadata
+
+- name: Restart RabbitMQ service
+  ansible.builtin.systemd:
+    name: "{{ rabbitmq_service_name }}"
+    state: restarted
+  listen: Restart RabbitMQ service
