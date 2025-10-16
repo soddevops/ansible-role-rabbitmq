@@ -1,0 +1,31 @@
+---
+# Klucze wg oficjalnej dokumentacji RabbitMQ
+rabbitmq_repo_primary_signing_key_url: "https://github.com/rabbitmq/signing-keys/releases/download/3.0/rabbitmq-release-signing-key.asc"
+rabbitmq_repo_erlang_repo_key_url: "https://github.com/rabbitmq/signing-keys/releases/download/3.0/cloudsmith.rabbitmq-erlang.E495BB49CC4BBE5B.key"
+rabbitmq_repo_server_repo_key_url: "https://github.com/rabbitmq/signing-keys/releases/download/3.0/cloudsmith.rabbitmq-server.9F4587F226208342.key"
+
+# Mirrory RabbitMQ (zalecane przez dokumentację)
+rabbitmq_repo_erlang_baseurls:
+  - "https://yum1.rabbitmq.com/erlang/el/{{ el_major }}/$basearch"
+  - "https://yum2.rabbitmq.com/erlang/el/{{ el_major }}/$basearch"
+rabbitmq_repo_erlang_noarch_baseurls:
+  - "https://yum1.rabbitmq.com/erlang/el/{{ el_major }}/noarch"
+  - "https://yum2.rabbitmq.com/erlang/el/{{ el_major }}/noarch"
+
+rabbitmq_repo_server_baseurls:
+  - "https://yum1.rabbitmq.com/rabbitmq/el/{{ el_major }}/$basearch"
+  - "https://yum2.rabbitmq.com/rabbitmq/el/{{ el_major }}/$basearch"
+rabbitmq_repo_server_noarch_baseurls:
+  - "https://yum1.rabbitmq.com/rabbitmq/el/{{ el_major }}/noarch"
+  - "https://yum2.rabbitmq.com/rabbitmq/el/{{ el_major }}/noarch"
+
+# Ustawienia repo
+rabbitmq_repo_enabled: true
+rabbitmq_repo_gpgcheck: true
+rabbitmq_repo_repo_gpgcheck: true
+rabbitmq_repo_sslverify: true
+rabbitmq_repo_metadata_expire: "300"
+rabbitmq_repo_sslcacert: "/etc/pki/tls/certs/ca-bundle.crt"
+
+# Dla EL8 przydatne
+rabbitmq_repo_module_hotfixes: "{{ el_major == 8 }}"
