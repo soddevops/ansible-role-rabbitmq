@@ -33,12 +33,25 @@
     state: started
     daemon_reload: true
 
-# Włącz wymagane pluginy
-- name: Włącz pluginy RabbitMQ
-  community.rabbitmq.rabbitmq_plugin:
-    names: "{{ item }}"
-    state: enabled
+# Sprawdź, które pluginy są już włączone
+- name: Sprawdź status wymaganych pluginów
+  become: true
+  ansible.builtin.command: rabbitmq-plugins is_enabled {{ item }}
+  register: rabbitmq_plugins_status
+  failed_when: false
+  changed_when: false
   loop: "{{ rabbitmq_plugins_to_enable }}"
+  loop_control:
+    label: "{{ item }}"
+
+# Włącz tylko te, które nie są aktywne
+- name: Włącz brakujące pluginy (offline)
+  become: true
+  ansible.builtin.command: rabbitmq-plugins enable --offline {{ item.item }}
+  when: item.rc != 0
+  loop: "{{ rabbitmq_plugins_status.results }}"
+  loop_control:
+    label: "{{ item.item }}"
   notify: Restart RabbitMQ service
 
 # Walidacja zmiennych użytkownika
