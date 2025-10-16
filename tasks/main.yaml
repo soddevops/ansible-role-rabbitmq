@@ -1,0 +1,45 @@
+---
+- name: Ustal główną wersję EL (8/9)
+  ansible.builtin.set_fact:
+    el_major: "{{ (ansible_facts.distribution_major_version | default(ansible_distribution_major_version)) | int }}"
+
+- name: Sprawdź wsparcie systemu
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.os_family == 'RedHat'
+      - el_major in [8, 9]
+    fail_msg: "Ta rola wspiera wyłącznie rodzinę RHEL (EL) w wersjach 8 i 9."
+    success_msg: "System wspierany: EL {{ el_major }}"
+
+- name: Dodaj repozytorium Erlang (Cloudsmith)
+  ansible.builtin.yum_repository:
+    name: rabbitmq_erlang
+    description: "RabbitMQ Erlang (Cloudsmith) for EL {{ el_major }}"
+    baseurl: "https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-erlang/rpm/el/{{ el_major }}/$basearch"
+    enabled: yes
+    gpgcheck: yes
+    repo_gpgcheck: yes
+    gpgkey:
+      - "https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-erlang/gpg.3D38095E.public.gpg"
+      - "https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-erlang/rpm/el/{{ el_major }}/$basearch/repodata/repomd.xml.key"
+    metadata_expire: "300"
+    sslverify: yes
+    state: present
+  notify: Refresh package metadata
+
+- name: Dodaj repozytorium RabbitMQ Server (Cloudsmith)
+  ansible.builtin.yum_repository:
+    name: rabbitmq_server
+    description: "RabbitMQ Server (Cloudsmith) for EL {{ el_major }}"
+    baseurl: "https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-server/rpm/el/{{ el_major }}/$basearch"
+    enabled: yes
+    gpgcheck: yes
+    repo_gpgcheck: yes
+    gpgkey:
+      - "https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-server/gpg.9F4587F226208342.public.gpg"
+      - "https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-server/rpm/el/{{ el_major }}/$basearch/repodata/repomd.xml.key"
+    metadata_expire: "300"
+    sslverify: yes
+    state: present
+  notify: Refresh package metadata
+...

@@ -1,0 +1,12 @@
+---
+- name: Refresh package metadata (dnf)
+  ansible.builtin.dnf:
+    update_cache: yes
+  when: ansible_facts.pkg_mgr == 'dnf'
+  listen: Refresh package metadata
+
+- name: Refresh package metadata (yum)
+  ansible.builtin.yum:
+    update_cache: yes
+  when: ansible_facts.pkg_mgr == 'yum'
+  listen: Refresh package metadata
