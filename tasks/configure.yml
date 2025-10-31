@@ -4,7 +4,7 @@
   ansible.builtin.package:
     name:
       - erlang
-      - rabbitmq-server
+      - rabbitmq-server-{{ rabbitmq_dlx_version }}
     state: present
   when: rabbitmq_install_packages
 
