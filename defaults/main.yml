@@ -27,8 +27,8 @@ rabbitmq_repo_sslverify: true
 rabbitmq_repo_metadata_expire: "300"
 rabbitmq_repo_sslcacert: "/etc/pki/tls/certs/ca-bundle.crt"
 
-# Dla EL8 przydatne
-rabbitmq_repo_module_hotfixes: "{{ el_major == 8 }}"
+# Wymagane dla EL8 i EL9 – bez tego DNF blokuje pakiety spoza modułów AppStream
+rabbitmq_repo_module_hotfixes: true
 
 # --- Konfiguracja instalacji i zarządzania RabbitMQ ---
 
@@ -40,6 +40,9 @@ rabbitmq_service_name: "rabbitmq-server"
 
 # Katalog na dodatkowe pluginy (.ez)
 rabbitmq_plugins_dir: "/usr/lib/rabbitmq/plugins"
+
+# Wersja RabbitMQ Server do zainstalowania
+rabbitmq_version: "4.1.4"
 
 # Plugin: rabbitmq_delayed_message_exchange
 # Dla wersji 4.1.x zawsze pobieramy 4.1.0
