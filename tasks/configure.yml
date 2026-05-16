@@ -1,10 +1,20 @@
 ---
 # Wyłącz moduł erlang z AppStream, aby DNF nie filtrował pakietów z repo Cloudsmith
-- name: Wyłącz moduł erlang w AppStream (EL8/EL9)
-  ansible.builtin.command: dnf module disable erlang -y
+- name: Sprawdź czy moduł erlang jest aktywny w AppStream
+  ansible.builtin.command: dnf module list --enabled erlang
+  register: _erlang_module_status
   changed_when: false
   failed_when: false
   when: rabbitmq_install_packages
+
+- name: Wyłącz moduł erlang w AppStream (EL8/EL9)
+  ansible.builtin.command: dnf module disable erlang -y
+  changed_when: true
+  when:
+    - rabbitmq_install_packages
+    - _erlang_module_status.rc is defined
+    - _erlang_module_status.rc == 0
+    - "'erlang' in (_erlang_module_status.stdout | default(''))"
 
 # Opcjonalnie: instalacja pakietów (jeśli nie były instalowane wcześniej)
 # disable_excludes: all – omija wykluczenia z /etc/dnf/dnf.conf (np. exclude=erlang rabbitmq-server)
@@ -14,7 +24,7 @@
     name:
       - erlang
       - rabbitmq-server-{{ rabbitmq_version }}
-    state: present
+    state: "{{ rabbitmq_package_state }}"
     disable_excludes: all
     update_cache: true
   when: rabbitmq_install_packages
@@ -60,6 +70,7 @@
   become: true
   ansible.builtin.command: rabbitmq-plugins enable --offline {{ item.item }}
   when: item.rc != 0
+  changed_when: true
   loop: "{{ rabbitmq_plugins_status.results }}"
   loop_control:
     label: "{{ item.item }}"

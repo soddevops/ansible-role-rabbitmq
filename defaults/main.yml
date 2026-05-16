@@ -35,6 +35,9 @@ rabbitmq_repo_module_hotfixes: true
 # Czy instalować pakiety erlang + rabbitmq-server
 rabbitmq_install_packages: true
 
+# Stan pakietów: present zachowuje idempotencję, latest aktualizuje do najnowszego builda pasującego do rabbitmq_version
+rabbitmq_package_state: "present"
+
 # Nazwa usługi
 rabbitmq_service_name: "rabbitmq-server"
 

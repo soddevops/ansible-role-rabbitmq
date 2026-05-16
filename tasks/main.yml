@@ -2,7 +2,7 @@
 - name: Pobierz fakty systemowe
   ansible.builtin.setup:
     gather_subset:
-      -  'distribution'
+      - 'distribution'
 
 - name: Ustal główną wersję EL (8/9)
   ansible.builtin.set_fact:
