@@ -7,12 +7,14 @@
   when: rabbitmq_install_packages
 
 # Opcjonalnie: instalacja pakietów (jeśli nie były instalowane wcześniej)
+# disable_excludes: all – omija wykluczenia z /etc/dnf/dnf.conf (np. exclude=erlang rabbitmq-server)
 - name: Zainstaluj Erlang i RabbitMQ Server
-  ansible.builtin.package:
+  ansible.builtin.dnf:
     name:
       - erlang
       - rabbitmq-server-{{ rabbitmq_version }}
     state: present
+    disable_excludes: all
   when: rabbitmq_install_packages
 
 # Przygotowanie katalogu na zewnętrzne pluginy

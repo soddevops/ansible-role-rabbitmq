@@ -41,8 +41,8 @@ rabbitmq_service_name: "rabbitmq-server"
 # Katalog na dodatkowe pluginy (.ez)
 rabbitmq_plugins_dir: "/usr/lib/rabbitmq/plugins"
 
-# Wersja RabbitMQ Server do zainstalowania
-rabbitmq_version: "4.1.4"
+# Wersja RabbitMQ Server do zainstalowania (wildcard instaluje najnowszy build z gałęzi)
+rabbitmq_version: "4.1.*"
 
 # Plugin: rabbitmq_delayed_message_exchange
 # Dla wersji 4.1.x zawsze pobieramy 4.1.0
