@@ -42,10 +42,11 @@ rabbitmq_service_name: "rabbitmq-server"
 rabbitmq_plugins_dir: "/usr/lib/rabbitmq/plugins"
 
 # Plugin: rabbitmq_delayed_message_exchange
+# Dla wersji 4.1.x zawsze pobieramy 4.1.0
 rabbitmq_install_dlx_plugin: true
 rabbitmq_dlx_version: "4.1.0"
 rabbitmq_dlx_filename: "rabbitmq_delayed_message_exchange-{{ rabbitmq_dlx_version }}.ez"
-rabbitmq_dlx_url: "https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/v{{ rabbitmq_dlx_version }}/{{ rabbitmq_dlx_filename }}"
+rabbitmq_dlx_url: "https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/v4.1.0/rabbitmq_delayed_message_exchange-4.1.0.ez"
 
 # Lista pluginów do włączenia
 rabbitmq_plugins_to_enable:
