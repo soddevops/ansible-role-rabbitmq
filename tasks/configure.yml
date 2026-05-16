@@ -8,6 +8,7 @@
 
 # Opcjonalnie: instalacja pakietów (jeśli nie były instalowane wcześniej)
 # disable_excludes: all – omija wykluczenia z /etc/dnf/dnf.conf (np. exclude=erlang rabbitmq-server)
+# update_cache: true   – wymusza odświeżenie metadanych repo przed instalacją
 - name: Zainstaluj Erlang i RabbitMQ Server
   ansible.builtin.dnf:
     name:
@@ -15,6 +16,7 @@
       - rabbitmq-server-{{ rabbitmq_version }}
     state: present
     disable_excludes: all
+    update_cache: true
   when: rabbitmq_install_packages
 
 # Przygotowanie katalogu na zewnętrzne pluginy
